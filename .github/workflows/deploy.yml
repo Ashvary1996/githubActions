@@ -1,0 +1,30 @@
+name: Auto Deploy Node.js App
+
+on:
+  push:
+    branches:
+      - main # Trigger workflow on push to main branch
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest # GitHub runner
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: 20
+
+      - name: Install dependencies
+        run: npm install
+
+      - name: Copy code to local Ubuntu folder
+        run: |
+          cp -r . /home/ashvary/xyz_server/backend/
+
+      - name: Restart PM2 app
+        run: |
+          pm2 restart xyz_backend || pm2 start server.js --name xyz_backend
